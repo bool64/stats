@@ -14,7 +14,7 @@ This library provides context-driven stats tracker.
 * Context-driven labels control.
 * Zero allocation implementation for Prometheus client.
 * Simple interface with variadic number of key-value pairs for labels.
-* Easily mockable interface free from 3rd part dependencies.
+* Easily mockable interface free from 3rd party dependencies.
 
 ## Example
 
