@@ -5,6 +5,7 @@ This library provides context-driven stats tracker.
 [![Build Status](https://github.com/bool64/stats/workflows/test/badge.svg)](https://github.com/bool64/stats/actions?query=branch%3Amaster+workflow%3Atest)
 [![Coverage Status](https://codecov.io/gh/bool64/stats/branch/master/graph/badge.svg)](https://codecov.io/gh/bool64/stats)
 [![GoDevDoc](https://img.shields.io/badge/dev-doc-00ADD8?logo=go)](https://pkg.go.dev/github.com/bool64/stats)
+[![time tracker](https://wakatime.com/badge/github/bool64/stats.svg)](https://wakatime.com/badge/github/bool64/stats)
 ![Code lines](https://sloc.xyz/github/bool64/stats/?category=code)
 ![Comments](https://sloc.xyz/github/bool64/stats/?category=comments)
 
