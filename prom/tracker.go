@@ -49,6 +49,7 @@ func NewStatsTracker(registry *prometheus.Registry) (*Tracker, error) {
 type Tracker struct {
 	mu         sync.Mutex
 	collectors map[identity]func(map[string]string, float64)
+	registered []prometheus.Collector
 	histograms map[string]prometheus.HistogramOpts
 	summaries  map[string]prometheus.SummaryOpts
 	counters   map[string]prometheus.CounterOpts
@@ -73,6 +74,22 @@ func (t *Tracker) Add(ctx context.Context, name string, value float64, labelsAnd
 // Set collects absolute value to Gauge.
 func (t *Tracker) Set(ctx context.Context, name string, absolute float64, labelsAndValues ...string) {
 	t.collect(ctx, true, name, absolute, labelsAndValues)
+}
+
+// Reset unregisters and removes all registered collectors.
+func (t *Tracker) Reset() {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+
+	for k := range t.collectors {
+		delete(t.collectors, k)
+	}
+
+	for _, c := range t.registered {
+		t.Registry.Unregister(c)
+	}
+
+	t.registered = t.registered[:0]
 }
 
 // DeclareHistogram registers histogram metric for given name.
@@ -211,6 +228,7 @@ func (t *Tracker) collect(ctx context.Context, isGauge bool, name string, value 
 	collect(lb.values, value)
 }
 
+// nolint: dupl // Code uses unique symbols.
 func (t *Tracker) summary(
 	ctx context.Context,
 	canonicalID identity,
@@ -232,6 +250,8 @@ func (t *Tracker) summary(
 		t.ErrLogger(ctx, err, labels)
 	}
 
+	t.registered = append(t.registered, summary)
+
 	*collect = func(labelValues map[string]string, value float64) {
 		summary.With(labelValues).Observe(value)
 	}
@@ -239,6 +259,7 @@ func (t *Tracker) summary(
 	return true
 }
 
+// nolint: dupl // Code uses unique symbols.
 func (t *Tracker) histogram(
 	ctx context.Context,
 	canonicalID identity,
@@ -260,6 +281,8 @@ func (t *Tracker) histogram(
 		t.ErrLogger(ctx, err, labels)
 	}
 
+	t.registered = append(t.registered, histogram)
+
 	*collect = func(labelValues map[string]string, value float64) {
 		histogram.With(labelValues).Observe(value)
 	}
@@ -267,6 +290,7 @@ func (t *Tracker) histogram(
 	return true
 }
 
+// nolint: dupl // Code uses unique symbols.
 func (t *Tracker) counter(
 	ctx context.Context,
 	canonicalID identity,
@@ -285,6 +309,8 @@ func (t *Tracker) counter(
 		t.ErrLogger(ctx, err, labels)
 	}
 
+	t.registered = append(t.registered, counter)
+
 	*collect = func(labelValues map[string]string, value float64) {
 		counter.With(labelValues).Add(value)
 	}
@@ -292,6 +318,7 @@ func (t *Tracker) counter(
 	return true
 }
 
+// nolint: dupl // Code uses unique symbols.
 func (t *Tracker) gauge(
 	ctx context.Context,
 	canonicalID identity,
@@ -309,6 +336,8 @@ func (t *Tracker) gauge(
 	if err != nil && t.ErrLogger != nil {
 		t.ErrLogger(ctx, err, labels)
 	}
+
+	t.registered = append(t.registered, gauge)
 
 	*collect = func(labelValues map[string]string, value float64) {
 		gauge.With(labelValues).Set(value)

@@ -100,4 +100,9 @@ func TestTracker(t *testing.T) {
 
 	err = testutil.GatherAndCompare(registry, bytes.NewBufferString(expected))
 	assert.NoError(t, err)
+
+	// No metrics after reset.
+	tr.Reset()
+	err = testutil.GatherAndCompare(registry, bytes.NewBufferString(""))
+	assert.NoError(t, err)
 }
