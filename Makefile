@@ -30,14 +30,10 @@ endif
 -include $(DEVGO_PATH)/makefiles/main.mk
 -include $(DEVGO_PATH)/makefiles/test-unit.mk
 -include $(DEVGO_PATH)/makefiles/lint.mk
+-include $(DEVGO_PATH)/makefiles/bench.mk
 -include $(DEVGO_PATH)/makefiles/github-actions.mk
 
 ## Run tests
 test: test-unit
-
-bench:
-	@$(GO) test -bench=. -count=10 -run=^a  ./... | tee /dev/tty >bench-$(shell git symbolic-ref HEAD --short | tr / - 2>/dev/null).txt
-	@test -s $(GOPATH)/bin/benchstat || bash -c 'cd /tmp;GOFLAGS= GOBIN=$(GOPATH)/bin $(GO) get -u golang.org/x/perf/cmd/benchstat'
-	@benchstat bench-$(shell git symbolic-ref HEAD --short | tr / - 2>/dev/null).txt
 
 
