@@ -29,6 +29,21 @@ func TestTrackerMock(t *testing.T) {
 	assert.Equal(t, 12.0, st.Value(s1))
 
 	assert.Equal(t, map[string]float64{m1: 55, m2: 11, s1: 12}, st.Values())
+
+	exp := map[string]float64{
+		"metric1{not-relevant1=\"abc1\"}": 22,
+		"metric1{not-relevant2=\"abc2\"}": 33,
+		"metric2{not-relevant3=\"abc3\"}": 11,
+		"strate1{not-relevant4=\"abc4\"}": 11,
+		"strate1{not-relevant5=\"abc5\"}": 12,
+	}
+	assert.Equal(t, exp, st.LabeledValues())
+
+	assert.Equal(t, `metric1{not-relevant1="abc1"} 22
+metric1{not-relevant2="abc2"} 33
+metric2{not-relevant3="abc3"} 11
+strate1{not-relevant4="abc4"} 11
+strate1{not-relevant5="abc5"} 12`, st.Metrics(), st.Metrics())
 }
 
 func TestTrackerMock_nilValues(t *testing.T) {
