@@ -48,3 +48,10 @@ tr.Add(ctx, "my_latency_seconds", 1.23)
 
 tr.Set(ctx, "temperature", 33.3)
 ```
+
+## Versioning
+
+This project adheres to [Semantic Versioning](https://semver.org/#semantic-versioning-200).
+
+Before version `1.0.0`, breaking changes are tagged with `MINOR` bump, features and fixes are tagged with `PATCH` bump.
+After version `1.0.0`, breaking changes are tagged with `MAJOR` bump.
