@@ -2,9 +2,10 @@ package stats_test
 
 import (
 	"context"
+	"testing"
+
 	"github.com/bool64/stats"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestAddKeysAndValues(t *testing.T) {
@@ -25,6 +26,7 @@ func TestAddKeysAndValues(t *testing.T) {
 
 func BenchmarkAddKeysAndValues(b *testing.B) {
 	b.ReportAllocs()
+
 	for i := 0; i < b.N; i++ {
 		ctx := stats.AddKeysAndValues(context.Background(), "k1", "one", "k2", "two")
 		_ = stats.KeysAndValues(ctx)
