@@ -29,7 +29,7 @@ type Setter interface {
 }
 
 // SetterFunc implements Setter.
-type SetterFunc func(ctx context.Context, name string, increment float64, labelsAndValues ...string)
+type SetterFunc func(ctx context.Context, name string, absolute float64, labelsAndValues ...string)
 
 // Set collects absolute value.
 func (f SetterFunc) Set(ctx context.Context, name string, absolute float64, labelsAndValues ...string) {
